@@ -34,6 +34,23 @@ object JWTUtil {
         .sign(refreshAlgorithm)
 
 
+    fun verify(token: String): DecodedJWT=
+        JWT.require(algorithm)
+            .withIssuer(ISSUER)
+            .build()
+            .verify(token)
+
+    fun verifyRefresh(token: String): DecodedJWT=
+        JWT.require(refreshAlgorithm)
+            .withIssuer(ISSUER)
+            .build()
+            .verify(token)
+
+    fun extractEmail(jwt: DecodedJWT): String =
+        jwt.getClaim(JWTClaims.EMAIL).asString()
+
+
+
     object JWTClaims {
         const val EMAIL = "email"
     }
