@@ -12,13 +12,16 @@ import org.springframework.stereotype.Service
 class SigninService @Autowired constructor(private val userRepository: UserRepository) {
 
 
-    fun signin(singinRequest: SigninRequest): SigninResponse{
+    fun signin(signinRequest: SigninRequest): SigninResponse{
         val user = userRepository
-            .findByEmail(singinRequest.email.toLowerCase())?: throw ParayoException("로그인 정보를 확인해주세요")
+            .findByEmail(signinRequest.email.toLowerCase())?: throw ParayoException("로그인 정보를 확인해주세요")
 
-        if(isNotValidPassword(singinRequest.password, user.password)){
+        if(isNotValidPassword(signinRequest.password, user.password)){
             throw ParayoException("로그인 정보를 확인해주세요")
         }
+
+        user.fcmToken = signinRequest.fcmToken
+        userRepository.save(user)
 
         return responseWithTokens(user)
     }
