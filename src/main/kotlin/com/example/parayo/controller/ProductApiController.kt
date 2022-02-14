@@ -1,14 +1,12 @@
 package com.example.parayo.controller
 
 import com.example.parayo.common.ApiResponse
-import com.example.parayo.common.ParayoException
 import com.example.parayo.domain.product.Product
 import com.example.parayo.domain.product.ProductService
 import com.example.parayo.domain.product.registration.ProductImageService
 import com.example.parayo.domain.product.registration.ProductRegistrationRequest
 import com.example.parayo.domain.product.registration.ProductRegistrationService
 import com.example.parayo.domain.product.toProductListItemResponse
-import com.example.parayo.domain.product.toProductResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -33,16 +31,9 @@ class ProductApiController @Autowired constructor(private val productImageServic
         @RequestParam productId: Long,
         @RequestParam(required = false) categoryId: Int?,
         @RequestParam direction: String,
-        @RequestParam(required = false) keyword: String?,
         @RequestParam(required = false) limit: Int?
     ) = productService
-        .search(categoryId, productId, direction, keyword, limit ?: 10)
+        .search(categoryId, productId, direction, limit ?: 10)
         .mapNotNull(Product::toProductListItemResponse)
         .let { ApiResponse.ok(it) }
-
-
-    @GetMapping("/products/{id}")
-    fun get(@PathVariable id: Long) = productService.get(id)?.let {
-        ApiResponse.ok(it.toProductResponse())
-    }?: throw  ParayoException("상품 정보를 찾을 수 없습니다")
 }

@@ -1,6 +1,5 @@
 package com.example.parayo.domain.user
 
-import com.example.parayo.domain.jpa.BaseEntity
 import java.util.*
 import javax.persistence.*
 
@@ -8,7 +7,25 @@ import javax.persistence.*
 @Entity(name = "user")
 class User(var email: String,
            var password: String,
-           var name : String,
-           var fcmToken: String?): BaseEntity() {
+           var name : String) {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id : Long? = null
+
+    var createdAt: Date? = null
+
+    var updatedAt: Date? = null
+
+    @PrePersist
+    fun prePersist(){
+        createdAt = Date()
+        updatedAt = Date()
+    }
+
+    @PreUpdate
+    fun preUpdate(){
+        updatedAt = Date()
+    }
 
 }
